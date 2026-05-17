@@ -1,7 +1,8 @@
 "use client";
-
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { sanityGlobalContent } from "../../hooks/sanity-API";
+import { Market, Locale, GlobalContent } from "../../types/localizeTypes";
 
 /* -------------------- types -------------------- */
 type NavLink = {
@@ -75,6 +76,23 @@ const Navbar = () => {
     { label: "Achievements", link: "/achievements" },
     { label: "Extras", link: "/extras" },
   ];
+
+  const [section, setSection] = useState<GlobalContent | null>(null);
+
+  useEffect(() => {
+    async function loadData() {
+      const data = await sanityGlobalContent({
+        market: "in",
+        locale: "en",
+      } as { market: Market; locale: Locale });
+
+      setSection(data);
+    }
+
+    loadData();
+  }, []);
+
+  console.log(section);
 
   function toggleMenu() {
     setIsOpenMenu((prev) => !prev);
