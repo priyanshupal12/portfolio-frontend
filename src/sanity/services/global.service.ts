@@ -1,4 +1,4 @@
-import type { Market, Locale } from "@/types/localizeTypes";
+import type { GlobalContent, Market, Locale } from "@/types/localizeTypes";
 import { ALLOWED_MARKETS } from "@/constents/localizeVars";
 import { ALLOWED_LOCALE } from "@/constents/localizeVars";
 import { isSanityConfig, querySanity } from "../client";
@@ -34,12 +34,27 @@ async function fetchSanityContent(normalizedMarketLangPair: {
   });
 }
 
-export async function getGlobalContent(locale: string, market: string) {
+function normalizeGlobalDocument(document: unknown): Pick<GlobalContent, "nav" | "footer"> {
+  if (!document || typeof document !== "object") {
+    return { nav: null, footer: null };
+  }
+
+  const record = document as Record<string, unknown>;
+  return {
+    nav: record.nav ?? null,
+    footer: record.footer ?? null,
+  };
+}
+
+export async function getGlobalContent(
+  locale: string,
+  market: string,
+): Promise<GlobalContent> {
   const normalizedMarketLocalePair = normalizeMarketLocalePair(locale, market);
   if (!isSanityConfig()) {
     return {
-      nav: {},
-      footer: {},
+      nav: null,
+      footer: null,
       source: "fallback",
       market: "",
       locale: ""
@@ -47,10 +62,10 @@ export async function getGlobalContent(locale: string, market: string) {
   }
   try {
     const document = await fetchSanityContent(normalizedMarketLocalePair);
-    const safeDocument =
-      document && typeof document === "object" ? document : {};
+    const safeDocument = normalizeGlobalDocument(document);
     return {
-      ...safeDocument,
+      nav: safeDocument.nav,
+      footer: safeDocument.footer,
       source: "sanity",
       market: normalizedMarketLocalePair.market,
       locale: normalizedMarketLocalePair.locale,

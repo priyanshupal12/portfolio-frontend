@@ -44,7 +44,7 @@ const DesktopView = ({ navLinks }: DesktopViewProps) => {
 
 /* ---------------- MOBILE VIEW ---------------- */
 
-const MobileView = ({ isOpenMenu, toggleMenu }: MobileViewProps) => {
+const MobileView = ({ toggleMenu }: MobileViewProps) => {
   return (
     <div className="w-full bg-background">
       <div className="flex justify-between items-center px-4 py-3 space-x-1">
