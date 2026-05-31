@@ -108,7 +108,7 @@ gsap.registerEffect({
         trigger,
         start: "top 16.5%",
         scrub: true,
-        markers: true,
+        markers: false,
         invalidateOnRefresh: true,
         ...scrollTrigger,
       },
